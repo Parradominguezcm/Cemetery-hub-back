@@ -1,6 +1,10 @@
 import pkg from 'pg';
 import bcrypt from 'bcrypt';
+import { validationResult } from 'express-validator';
+
+
 const { Client } = pkg;
+
 
 const signupController = async (req, res) => {
     const client = new Client({
@@ -10,17 +14,27 @@ const signupController = async (req, res) => {
         "port": 5432,
         "ssl": false,
         "database": "task_manager",
-        "password": ""
+        "password": process.env.DB_PWD
     })
+
+    //validation error handling
+    const errors = validationResult(req)
+    console.log(errors)
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ error: errors.array() });
+    }
+
     const { email, username, firstname, lastname, userpassword } = req.body
     const saltRounds = 10;
     const salt = bcrypt.genSaltSync(saltRounds);
-    const hash = bcrypt.hashSync(userpassword, salt);
-    // Store hash in your password DB.
+    const hash = bcrypt.hashSync(userpassword, salt);// Store hash in your password DB.
+
     client.connect()
 
+    //check for email already in use
     const users = await client.query(`SELECT email FROM task_manager_users WHERE email = '${email}'`)
 
+    // Populate database
     if (users.rows.length === 0) {
         const x = await client.query(`
         INSERT INTO task_manager_users
@@ -43,8 +57,4 @@ const signupController = async (req, res) => {
     }
 }
 
-export default signupController// connnect to the client
-// read data from the req
-// write sql query to insert a record into users
-// query database
-// return success state
+export default signupController

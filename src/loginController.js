@@ -1,4 +1,7 @@
 import pkg from 'pg';
+import bcrypt from 'bcrypt'
+import { validationResult } from 'express-validator';
+
 const { Client } = pkg;
 
 const loginController = async (req, res) => {
@@ -9,14 +12,39 @@ const loginController = async (req, res) => {
         "port": 5432,
         "ssl": false,
         "database": "task_manager",
-        "password": ""
+        "password": process.env.DB_PWD
     })
+
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ error: errors.array() });
+    }
 
     client.connect()
 
-    const x = await client.query('SELECT * from task_manager_users')
+    const { email, userpassword } = req.body
+    const users = await client.query(`SELECT email, userpassword FROM task_manager_users WHERE email = '${email}'`)
+    const hash = users.rows[0].userpassword
 
-    res.send(x)
+    const isPasswordValid = await bcrypt.compare(userpassword, hash)
+
+
+    if (isPasswordValid === true) {
+        //generate new JWT token, handle the validation for the front end 
+        res.status = 200
+        res.send({
+            status: true,
+            message: 'LOGIN SUCCESSFUL'
+        })
+    } else {
+        res.status = 404
+        res.send({
+            status: false,
+            message: 'LOGIN FAILED'
+        })
+    }
+
 }
 
 export default loginController
