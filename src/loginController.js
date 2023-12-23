@@ -19,7 +19,7 @@ const loginController = async (req, res) => {
 
     const { email, userpassword } = req.body
     const users = await client.query(`
-    SELECT email, userpassword, id FROM task_manager_users
+    SELECT email, userpassword, id, username FROM task_manager_users
     WHERE email = '${email}'
     `)
 
@@ -32,7 +32,7 @@ const loginController = async (req, res) => {
         //generate new JWT token, handle the validation for the front end 
         var now = new Date().getTime();
         var fiveDaysFromNow = now + (1000 * 60 * 60 * 24 * 5);
-        var token = jwt.sign({ email, expiryDate: fiveDaysFromNow }, 'shhhhh');
+        var token = jwt.sign({ email, expiryDate: fiveDaysFromNow }, process.env.SALT);
         await client.query(`
         INSERT INTO task_manager_tokens
         (user_id, token, expires_at)
@@ -43,6 +43,8 @@ const loginController = async (req, res) => {
         res.send({
             status: true,
             token,
+            user: users.rows[0].username,
+            expiryDate: 5,
             message: 'LOGIN SUCCESSFUL'
         })
     } else {

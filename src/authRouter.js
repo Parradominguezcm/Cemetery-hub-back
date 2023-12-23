@@ -3,6 +3,7 @@ import express from 'express'
 import loginController from './loginController.js'
 import signupController from './signupController.js'
 import { check } from 'express-validator'
+import { userValidationController } from './userValidationController.js'
 
 const router = Router()
 
@@ -30,5 +31,7 @@ const signupValidator = [
 
 
 router.post("/signup", signupValidator, signupController)
+
+router.post("/users", userValidationController)
 
 export default router

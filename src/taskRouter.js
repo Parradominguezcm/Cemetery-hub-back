@@ -1,37 +1,34 @@
 import { Router } from 'express'
 import express from 'express'
-import jwt from 'jsonwebtoken'
 import connectPostgresClient from './helperFunctions/connectPostgresClient.js'
-
+import { tokenCheck } from './helperFunctions/tokenCheck.js'
+import { createTaskController } from './createTaskController.js'
+import { check } from 'express-validator'
 
 const taskRouter = Router()
+const taskValidator = [
+    check('task_title', 'task name').notEmpty().escape().withMessage('You need to name your task'),
+    check('task_description').escape(),
+    check('task_deadline').escape(),
+    check('task_completed').toBoolean(),
+];
 
 taskRouter.use(express.json())
 taskRouter.get('/alltasks', async (req, res) => {
     const client = connectPostgresClient();
-
-    var decoded = jwt.verify(req.body.token, 'shhhhh');
-    const users = await client.query(`
-    SELECT *
-    FROM task_manager_tokens
-    JOIN task_manager_users ON task_manager_tokens.user_id = task_manager_users.id
-    WHERE token = '${req.body.token}'
-    `)
-
-    var now = new Date();
-    if (new Date(users.rows[0].expires_at) < now) {
-        // selected date is in the past
-        res.status = 500
+    if (await tokenCheck(client, req.body.token == true)) {
+        res.send({
+            status: true
+        })
+    } else {
+        res.status = 404
         res.send({
             status: false,
-            message: "EXPIRED TOKEN"
         })
     }
-
-    res.send({
-        'mock': decoded
-    })
 })
+
+taskRouter.post('/createtask', taskValidator, createTaskController)
 
 
 export default taskRouter
