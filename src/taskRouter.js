@@ -1,9 +1,9 @@
 import { Router } from 'express'
 import express from 'express'
-import connectPostgresClient from './helperFunctions/connectPostgresClient.js'
-import { tokenCheck } from './helperFunctions/tokenCheck.js'
 import { createTaskController } from './createTaskController.js'
 import { check } from 'express-validator'
+import { allTasksController } from './allTasksController.js'
+import { editTaskController } from './editTaskController.js'
 
 const taskRouter = Router()
 const taskValidator = [
@@ -14,21 +14,9 @@ const taskValidator = [
 ];
 
 taskRouter.use(express.json())
-taskRouter.get('/alltasks', async (req, res) => {
-    const client = connectPostgresClient();
-    if (await tokenCheck(client, req.body.token == true)) {
-        res.send({
-            status: true
-        })
-    } else {
-        res.status = 404
-        res.send({
-            status: false,
-        })
-    }
-})
-
+taskRouter.get('/alltasks', allTasksController)
 taskRouter.post('/createtask', taskValidator, createTaskController)
+taskRouter.post('/edittask', taskValidator, editTaskController)
 
 
 export default taskRouter
