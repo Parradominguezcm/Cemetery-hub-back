@@ -1,9 +1,9 @@
 import { Router } from 'express'
 import express from 'express'
-import { createTaskController } from './createTaskController.js'
 import { check } from 'express-validator'
-import { allTasksController } from './allTasksController.js'
-import { editTaskController } from './editTaskController.js'
+import { createTaskController } from '../controllers/createTaskController.js'
+import { allTasksController } from '../controllers/allTasksController.js'
+import { editTaskController } from '../controllers/editTaskController.js'
 
 const taskRouter = Router()
 const taskValidator = [
@@ -14,7 +14,7 @@ const taskValidator = [
 ];
 
 taskRouter.use(express.json())
-taskRouter.get('/alltasks', allTasksController)
+taskRouter.post('/alltasks', allTasksController)
 taskRouter.post('/createtask', taskValidator, createTaskController)
 taskRouter.post('/edittask', taskValidator, editTaskController)
 

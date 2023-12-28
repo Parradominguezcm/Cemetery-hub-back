@@ -1,5 +1,5 @@
-import connectPostgresClient from './helperFunctions/connectPostgresClient.js'
-import { tokenCheck } from './helperFunctions/tokenCheck.js'
+import connectPostgresClient from '../helperFunctions/connectPostgresClient.js'
+import { tokenCheck } from '../helperFunctions/tokenCheck.js'
 
 export const allTasksController = async (req, res) => {
     const client = connectPostgresClient();

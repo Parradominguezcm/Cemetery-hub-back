@@ -2,7 +2,7 @@ import pkg from 'pg';
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { validationResult } from 'express-validator';
-import connectPostgresClient from './helperFunctions/connectPostgresClient.js';
+import connectPostgresClient from '../helperFunctions/connectPostgresClient.js';
 
 const { Client } = pkg;
 

@@ -1,9 +1,9 @@
 import { Router } from 'express'
 import express from 'express'
-import loginController from './loginController.js'
-import signupController from './signupController.js'
 import { check } from 'express-validator'
-import { userValidationController } from './userValidationController.js'
+import loginController from '../controllers/loginController.js'
+import signupController from '../controllers/signupController.js'
+import { userValidationController } from '../controllers/userValidationController.js'
 
 const router = Router()
 

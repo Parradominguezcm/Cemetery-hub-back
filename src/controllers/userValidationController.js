@@ -1,6 +1,6 @@
-import connectPostgresClient from './helperFunctions/connectPostgresClient.js';
+import connectPostgresClient from '../helperFunctions/connectPostgresClient.js';
 import jwt from 'jsonwebtoken'
-import { isDateExpired } from './helperFunctions/dates.js'
+import { isDateExpired } from '../helperFunctions/dates.js'
 
 export const userValidationController = async (req, res) => {
     const client = connectPostgresClient();
