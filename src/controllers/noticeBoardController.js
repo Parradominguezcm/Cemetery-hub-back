@@ -5,7 +5,8 @@ export const noticeBoardController = async (req, res) => {
     const client = connectPostgresClient();
     if (await tokenCheck(client, req.body.token == true)) {
         const messages = await client.query(`
-        SELECT * FROM task_manager_messages
+        SELECT message, date_posted, user_id, username FROM task_manager_messages
+        JOIN task_manager_users ON task_manager_users.id = user_id
         `)
 
         return res.send(messages.rows)

@@ -11,7 +11,7 @@ noticeBoardRouter.use(express.json())
 const messageValidator = [
     check('message').notEmpty().escape().withMessage('Write a message to post')]
 
-noticeBoardRouter.get('/noticeBoard', noticeBoardController)
+noticeBoardRouter.post('/noticeBoard', noticeBoardController)
 noticeBoardRouter.post('/writeMessage', messageValidator, messageController)
 
 export default noticeBoardRouter
