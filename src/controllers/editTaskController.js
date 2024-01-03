@@ -4,7 +4,7 @@ import { validationResult } from "express-validator"
 
 export const editTaskController = async (req, res) => {
     const client = connectPostgresClient();
-    const { task_title, task_description, task_completed, token } = req.body
+    const { id, task_title, task_description, task_completed, token } = req.body
 
     if (await tokenCheck(client, token == true)) {
         const errors = validationResult(req)
@@ -13,8 +13,8 @@ export const editTaskController = async (req, res) => {
         } else {
             await client.query(`
                 UPDATE task_manager_task
-                SET task_description = '${task_description}', task_completed = ${task_completed}
-                WHERE task_title = '${task_title}';
+                SET task_completed = ${task_completed}
+                WHERE id = '${id}';
                 `)
 
             return res.send({

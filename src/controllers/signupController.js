@@ -19,7 +19,6 @@ const signupController = async (req, res) => {
 
     //validation error handling
     const errors = validationResult(req)
-    console.log(errors)
     if (!errors.isEmpty()) {
         return res.status(422).json({ error: errors.array() });
     }
@@ -36,7 +35,7 @@ const signupController = async (req, res) => {
 
     // Populate database
     if (users.rows.length === 0) {
-        const x = await client.query(`
+        const newUser = await client.query(`
         INSERT INTO task_manager_users
         (email, username, firstname, lastname, userpassword)
         VALUES
@@ -45,7 +44,7 @@ const signupController = async (req, res) => {
         res.status = 201
         res.send({
             message: 'USER_CREATED',
-            status: x.rowCount > 0
+            status: newUser.rowCount > 0
         })
     } else {
         res.status = 400

@@ -5,7 +5,7 @@ export const allTasksController = async (req, res) => {
     const client = connectPostgresClient();
     if (await tokenCheck(client, req.body.token == true)) {
         const allTasks = await client.query(`
-        SELECT * FROM task_manager_task
+        SELECT * FROM task_manager_task ORDER BY id
         `)
 
         return res.send(allTasks.rows)
